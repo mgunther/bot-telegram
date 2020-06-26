@@ -14,11 +14,11 @@ def welcome(update, context):
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
     except Exception as e:
         print(str(e))
-        
+
 def feedback(update, context):
     try:
         message = 'Por favor, digite um feedback para o nosso tutorial:'
-        update.message.reply_text(message, reply_markup=ReplyKeyboardMarkup([], one_time_keyboard=True)) 
+        update.message.reply_text(message, reply_markup=ReplyKeyboardMarkup([], one_time_keyboard=True))
         return STATE1
     except Exception as e:
         print(str(e))
@@ -27,14 +27,13 @@ def inputFeedback(update, context):
     feedback = update.message.text
     print(feedback)
     if len(feedback) < 10:
-        message = """Seu feedback foi muito curtinho... 
+        message = """Seu feedback foi muito curtinho...
                         \nInforma mais pra gente, por favor?"""
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
         return STATE1
     else:
         message = "Muito obrigado pelo seu feedback!"
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
-
 
 def inputFeedback2(update, context):
     feedback = update.message.text
@@ -43,7 +42,6 @@ def inputFeedback2(update, context):
 
 def cancel(update, context):
     return ConversationHandler.END
-
 
 # --------------------------------------------------
 # ChatBot para o Telegram

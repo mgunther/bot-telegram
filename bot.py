@@ -111,14 +111,22 @@ def dblist(update, context):
         tables = ""
         sql = sqlite3.connect(DBPATH)
         cursor = sql.cursor()
-        cursor.execute("SELECT tbl_name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';")
+        # query = "SELECT tbl_name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';"
+        query = ("SELECT m.name        AS table_name, " +
+                 "       s.ncell       AS lines " +
+                 "FROM   sqlite_master AS m " +
+                 "JOIN   dbstat        AS s " +
+                 "                     ON m.name = s.name " +
+                 "WHERE m.type ='table' " +
+                 "  AND m.name NOT LIKE 'sqlite_%';")
+        cursor.execute(query)
         for table in cursor.fetchall():
-            tables = tables + " - " + str(table[0]) + "\n"
+            tables = tables + " - " + str(table[0]) + " (" + str(table[1]) + " rows)\n"
         sql.close()
         message = ("There are the tables below in the database:\n" +
                     "Database name: " + DBPATH + "\n" +
                     "Table Name\n" +
-                    "------------------------------\n" + tables)
+                    "--------------------------------------------------\n" + tables)
         print(message)
         context.bot.send_message(chat_id = update.effective_chat.id, text = message)
     except Exception as e:

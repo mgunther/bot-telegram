@@ -114,6 +114,7 @@ def dblist(update, context):
         cursor.execute("SELECT tbl_name FROM sqlite_master;")
         for table in cursor.fetchall():
             tables = tables + " - " + str(table) + "\n"
+            print(table)
         sql.close()
         message = ("There are the tables below in the database:\n" +
                     "Database name: " + DBPATH + "\n" +

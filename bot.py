@@ -3,7 +3,7 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
                           RegexHandler, ConversationHandler, CallbackQueryHandler)
 from telegram     import (ReplyKeyboardMarkup, ReplyKeyboardRemove,
                           InlineKeyboardButton, InlineKeyboardMarkup)
-
+import sqlite3
 #
 # Initialization
 # --------------
@@ -21,6 +21,8 @@ if(DBTYPE == 'sqlite'):
     DBNAME = ""
     DBUSER = ""
     DBPASS = ""
+    sql = sqlite3.connect(DBPATH)
+    cursor = sql.cursor()
 else:
     DBPATH = ""
     DBHOST = config.get("DB", "host")
@@ -35,17 +37,18 @@ print("| By Marcio Luis Gunther <marcio@marciogunther.com>          |")
 print("| Version 0.1.0 (26-06-2020)                                 |")
 print("+------------------------------------------------------------+")
 
-print(" CHATBOT NAME: ", NAME)
-print(" DESCRIPTION:  ", DESC)
-print(" TOKEN:        ", TOKEN)
-print(" DBTYPE:       ", DBTYPE)
-if(DBTYPE == 'sqlite'):
-    print(" DBPATH:       ", DBPATH)
-else:
-    print(" DBHOST:       ", DBHOST)
-    print(" DBNAME:       ", DBNAME)
-    print(" DBUSER:       ", DBUSER)
-    print(" DBPASS:       ", DBPASS)
+if(VERBOSE == '1'):
+    print(" CHATBOT NAME: ", NAME)
+    print(" DESCRIPTION:  ", DESC)
+    print(" TOKEN:        ", TOKEN)
+    print(" DBTYPE:       ", DBTYPE)
+    if(DBTYPE == 'sqlite'):
+        print(" DBPATH:       ", DBPATH)
+    else:
+        print(" DBHOST:       ", DBHOST)
+        print(" DBNAME:       ", DBNAME)
+        print(" DBUSER:       ", DBUSER)
+        print(" DBPASS:       ", DBPASS)
 
 STATE1 = 1
 STATE2 = 2
@@ -53,7 +56,6 @@ STATE2 = 2
 def welcome(update, context):
     try:
         message = ("Olá " + update.message.from_user.first_name + "!\n" +
-            "Vamos iniciar a nossa negociação?\n" +
             "Em que posso ajudá-lo hoje?")
         print(message)
         context.bot.send_message(chat_id = update.effective_chat.id, text = message)
@@ -104,15 +106,31 @@ def getNota(update, context):
     message = 'Muito obrigado pela sua nota: ' + str(query.data)
     context.bot.send_message(chat_id = update.effective_chat.id, text = message)
 
+def dblist(update, context):
+    try:
+        message = "There are the tables below in the database:"
+        context.bot.send_message(chat_id = update.effective_chat.id, text = message)
+        message = "database bame: " + DBPATH
+        context.bot.send_message(chat_id = update.effective_chat.id, text = message)
+        cursor.execute("SELECT tbl_name FROM sqlite_master;")
+        for table in cursor.fetchall():
+            context.bot.send_message(chat_id = update.effective_chat.id, text = " - " + table)
+    except Exception as e:
+        print(str(e))
+
+
+
+
+
 # --------------------------------------------------
 # ChatBot para o Telegram
 # By Marcio Luis Gunther <marcio@marciogunther.com>
 # ==================================================
 def main():
     try:
-        # token = '1182770672:AAE2ejI2vsG8kWLOSbpi8le0cdGbS9f09Ms'
         updater = Updater(token=TOKEN, use_context=True)
         updater.dispatcher.add_handler(CommandHandler('start', welcome))
+        updater.dispatcher.add_handler(CommandHandler('dblist', dblist))
 
         conversation_handler = ConversationHandler(
             entry_points=[CommandHandler('feedback', feedback)],

@@ -21,8 +21,8 @@ if(DBTYPE == 'sqlite'):
     DBNAME = ""
     DBUSER = ""
     DBPASS = ""
-    sql = sqlite3.connect(DBPATH)
-    cursor = sql.cursor()
+    # sql = sqlite3.connect(DBPATH)
+    # cursor = sql.cursor()
 else:
     DBPATH = ""
     DBHOST = config.get("DB", "host")
@@ -108,13 +108,17 @@ def getNota(update, context):
 
 def dblist(update, context):
     try:
-        message = "There are the tables below in the database:"
-        context.bot.send_message(chat_id = update.effective_chat.id, text = message)
-        message = "database bame: " + DBPATH
-        context.bot.send_message(chat_id = update.effective_chat.id, text = message)
+        tables = ""
+        sql = sqlite3.connect(DBPATH)
+        cursor = sql.cursor()
         cursor.execute("SELECT tbl_name FROM sqlite_master;")
         for table in cursor.fetchall():
-            context.bot.send_message(chat_id = update.effective_chat.id, text = " - " + table)
+            tables += " - " + table + "\n"
+        sql.close()
+        message = ("There are the tables below in the database:\n" +
+                    "Database name: " + DBPATH + "\n" +
+                    "------------------------------\n" + tables)
+        context.bot.send_message(chat_id = update.effective_chat.id, text = message)
     except Exception as e:
         print(str(e))
 

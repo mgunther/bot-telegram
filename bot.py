@@ -109,6 +109,7 @@ def getNota(update, context):
 def dblist(update, context):
     try:
         tables = ""
+        row_no = 0
         sql = sqlite3.connect(DBPATH)
         cursor = sql.cursor()
         # query = "SELECT tbl_name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';"
@@ -121,7 +122,8 @@ def dblist(update, context):
                  "  AND m.name NOT LIKE 'sqlite_%';")
         cursor.execute(query)
         for table in cursor.fetchall():
-            tables = tables + " - " + str(table[0]) + " (" + str(table[1]) + " rows)\n"
+            row_no = row_no + 1
+            tables = tables + " > " + str(row_no) + " " + str(table[0]) + " (" + str(table[1]) + " rows)\n"
         sql.close()
         message = ("There are the tables below in the database:\n" +
                     "Database name: " + DBPATH + "\n" +

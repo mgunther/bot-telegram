@@ -113,11 +113,12 @@ def dblist(update, context):
         cursor = sql.cursor()
         cursor.execute("SELECT tbl_name FROM sqlite_master;")
         for table in cursor.fetchall():
-            tables += " - " + table + "\n"
+            tables = tables + " - " + table + "\n"
         sql.close()
         message = ("There are the tables below in the database:\n" +
                     "Database name: " + DBPATH + "\n" +
                     "------------------------------\n" + tables)
+        print(message)
         context.bot.send_message(chat_id = update.effective_chat.id, text = message)
     except Exception as e:
         print(str(e))

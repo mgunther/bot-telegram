@@ -111,13 +111,13 @@ def dblist(update, context):
         tables = ""
         sql = sqlite3.connect(DBPATH)
         cursor = sql.cursor()
-        cursor.execute("SELECT tbl_name FROM sqlite_master;")
+        cursor.execute("SELECT tbl_name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';")
         for table in cursor.fetchall():
             tables = tables + " - " + str(table[0]) + "\n"
-            print(table[0])
         sql.close()
         message = ("There are the tables below in the database:\n" +
                     "Database name: " + DBPATH + "\n" +
+                    "Table Name\n" +
                     "------------------------------\n" + tables)
         print(message)
         context.bot.send_message(chat_id = update.effective_chat.id, text = message)
@@ -137,7 +137,7 @@ def main():
         updater = Updater(token=TOKEN, use_context=True)
         updater.dispatcher.add_handler(CommandHandler('start', welcome))
         updater.dispatcher.add_handler(CommandHandler('dblist', dblist))
-
+        
         conversation_handler = ConversationHandler(
             entry_points=[CommandHandler('feedback', feedback)],
             states={

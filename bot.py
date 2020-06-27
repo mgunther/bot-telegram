@@ -1,6 +1,51 @@
+from configparser import ConfigParser
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
-                         RegexHandler, ConversationHandler)
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
+                          RegexHandler, ConversationHandler, CallbackQueryHandler)
+from telegram     import (ReplyKeyboardMarkup, ReplyKeyboardRemove,
+                          InlineKeyboardButton, InlineKeyboardMarkup)
+
+#
+# Initialization
+# --------------
+#
+config = ConfigParser()
+config.read("chatbot.ini")
+TOKEN   = config.get("CHATBOT", "token")
+NAME    = config.get("CHATBOT", "name")
+DESC    = config.get("CHATBOT", "description")
+VERBOSE = config.get("CHATBOT", "verbose")
+DBTYPE  = config.get("DB", "type")
+if(DBTYPE == 'sqlite'):
+    DBPATH = config.get("DB", "path")
+    DBHOST = ""
+    DBNAME = ""
+    DBUSER = ""
+    DBPASS = ""
+else:
+    DBPATH = ""
+    DBHOST = config.get("DB", "host")
+    DBNAME = config.get("DB", "name")
+    DBUSER = config.get("DB", "user")
+    DBPASS = config.get("DB", "pass")
+
+print("+------------------------------------------------------------+")
+print("| CHATBOT FOR TELEGRAM                                       |")
+print("+------------------------------------------------------------+")
+print("| By Marcio Luis Gunther <marcio@marciogunther.com>          |")
+print("| Version 0.1.0 (26-06-2020)                                 |")
+print("+------------------------------------------------------------+")
+
+print(" CHATBOT NAME: ", NAME)
+print(" DESCRIPTION:  ", DESC)
+print(" TOKEN:        ", TOKEN)
+print(" DBTYPE:       ", DBTYPE)
+if(DBTYPE == 'sqlite'):
+    print(" DBPATH:       ", DBPATH)
+else:
+    print(" DBHOST:       ", DBHOST)
+    print(" DBNAME:       ", DBNAME)
+    print(" DBUSER:       ", DBUSER)
+    print(" DBPASS:       ", DBPASS)
 
 STATE1 = 1
 STATE2 = 2
@@ -27,8 +72,8 @@ def inputFeedback(update, context):
     feedback = update.message.text
     print(feedback)
     if len(feedback) < 10:
-        message = """Seu feedback foi muito curtinho...
-                        \nInforma mais pra gente, por favor?"""
+        message = ("Seu feedback foi muito curtinho...\n" +
+                "Informa mais pra gente, por favor?")
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
         return STATE1
     else:
@@ -43,14 +88,30 @@ def inputFeedback2(update, context):
 def cancel(update, context):
     return ConversationHandler.END
 
+def askForNota(update, context):
+    question = 'Qual nota você dá para o tutorial?'
+    keyboard = InlineKeyboardMarkup(
+        [[InlineKeyboardButton("👎 1", callback_data='1'),
+          InlineKeyboardButton("2", callback_data='2'),
+          InlineKeyboardButton("🤔 3", callback_data='3'),
+          InlineKeyboardButton("4", callback_data='4'),
+          InlineKeyboardButton("👍 5", callback_data='5')]])
+    update.message.reply_text(question, reply_markup=keyboard)
+
+def getNota(update, context):
+    query = update.callback_query
+    print(str(query.data))
+    message = 'Obrigada pela sua nota: ' + str(query.data) 
+    context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+
 # --------------------------------------------------
 # ChatBot para o Telegram
 # By Marcio Luis Gunther <marcio@marciogunther.com>
 # ==================================================
 def main():
     try:
-        token = '1182770672:AAE2ejI2vsG8kWLOSbpi8le0cdGbS9f09Ms'
-        updater = Updater(token=token, use_context=True)
+        # token = '1182770672:AAE2ejI2vsG8kWLOSbpi8le0cdGbS9f09Ms'
+        updater = Updater(token=TOKEN, use_context=True)
         updater.dispatcher.add_handler(CommandHandler('start', welcome))
 
         conversation_handler = ConversationHandler(
@@ -61,6 +122,9 @@ def main():
             },
             fallbacks=[CommandHandler('cancel', cancel)])
         updater.dispatcher.add_handler(conversation_handler)
+
+        updater.dispatcher.add_handler(CommandHandler('nota', askForNota))
+        updater.dispatcher.add_handler(CallbackQueryHandler(getNota))
 
         updater.start_polling()
         print('Oi, eu sou o updater ' + str(updater))

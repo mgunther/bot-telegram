@@ -56,14 +56,14 @@ def welcome(update, context):
             "Vamos iniciar a nossa negociação?\n" +
             "Em que posso ajudá-lo hoje?")
         print(message)
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+        context.bot.send_message(chat_id = update.effective_chat.id, text = message)
     except Exception as e:
         print(str(e))
 
 def feedback(update, context):
     try:
         message = 'Por favor, digite um feedback para o nosso tutorial:'
-        update.message.reply_text(message, reply_markup=ReplyKeyboardMarkup([], one_time_keyboard=True))
+        update.message.reply_text(message, reply_markup = ReplyKeyboardMarkup([], one_time_keyboard = True))
         return STATE1
     except Exception as e:
         print(str(e))
@@ -73,17 +73,17 @@ def inputFeedback(update, context):
     print(feedback)
     if len(feedback) < 10:
         message = ("Seu feedback foi muito curtinho...\n" +
-                "Informa mais pra gente, por favor?")
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+                   "Informa mais pra gente, por favor?")
+        context.bot.send_message(chat_id = update.effective_chat.id, text = message)
         return STATE1
     else:
         message = "Muito obrigado pelo seu feedback!"
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+        context.bot.send_message(chat_id = update.effective_chat.id, text = message)
 
 def inputFeedback2(update, context):
     feedback = update.message.text
     message = "Muito obrigado pelo seu feedback!"
-    context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+    context.bot.send_message(chat_id = update.effective_chat.id, text = message)
 
 def cancel(update, context):
     return ConversationHandler.END
@@ -91,18 +91,18 @@ def cancel(update, context):
 def askForNota(update, context):
     question = 'Qual nota você dá para o tutorial?'
     keyboard = InlineKeyboardMarkup(
-        [[InlineKeyboardButton("👎 1", callback_data='1'),
-          InlineKeyboardButton("2", callback_data='2'),
-          InlineKeyboardButton("🤔 3", callback_data='3'),
-          InlineKeyboardButton("4", callback_data='4'),
-          InlineKeyboardButton("👍 5", callback_data='5')]])
-    update.message.reply_text(question, reply_markup=keyboard)
+        [[InlineKeyboardButton("☹️ 1", callback_data = '1'),
+          InlineKeyboardButton("🙁 2", callback_data = '2'),
+          InlineKeyboardButton("😐 3", callback_data = '3'),
+          InlineKeyboardButton("🙂 4", callback_data = '4'),
+          InlineKeyboardButton("😀 5", callback_data = '5')]])
+    update.message.reply_text(question, reply_markup = keyboard)
 
 def getNota(update, context):
     query = update.callback_query
     print(str(query.data))
-    message = 'Obrigada pela sua nota: ' + str(query.data) 
-    context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+    message = 'Muito obrigado pela sua nota: ' + str(query.data)
+    context.bot.send_message(chat_id = update.effective_chat.id, text = message)
 
 # --------------------------------------------------
 # ChatBot para o Telegram
@@ -127,7 +127,7 @@ def main():
         updater.dispatcher.add_handler(CallbackQueryHandler(getNota))
 
         updater.start_polling()
-        print('Oi, eu sou o updater ' + str(updater))
+        print(' Hello, I am the updater ' + str(updater))
         updater.idle()
     except Exception as e:
         print(str(e))

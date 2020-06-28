@@ -58,7 +58,7 @@ def welcome(update, context):
         message = ("Olá **" + update.message.from_user.first_name + "**!\n" +
             "Em que posso ajudá-lo hoje?")
         print(message)
-        context.bot.send_message(chat_id = update.effective_chat.id, text = message)
+        context.bot.send_message(chat_id = update.effective_chat.id, text = message, parse_mode=update.ParseMode.MARKDOWN)
     except Exception as e:
         print(str(e))
 

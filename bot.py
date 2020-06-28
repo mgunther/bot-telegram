@@ -126,8 +126,7 @@ def dblist(update, context):
             tables = tables + " > " + str(row_no) + " " + str(table[0]) + " (" + str(table[1]) + " rows)\n"
         sql.close()
         message = ("There are the tables below in the database:\n" +
-                    "Database name: " + DBPATH + "\n" +
-                    "Table Name\n" +
+                    "Database name: *" + DBPATH + "*\n" +
                     "--------------------------------------------------\n" + tables)
         print(message)
         context.bot.send_message(chat_id = update.effective_chat.id, text = message)
@@ -149,12 +148,12 @@ def main():
         updater.dispatcher.add_handler(CommandHandler('dblist', dblist))
         
         conversation_handler = ConversationHandler(
-            entry_points=[CommandHandler('feedback', feedback)],
-            states={
+            entry_points = [CommandHandler('feedback', feedback)],
+            states = {
                 STATE1: [MessageHandler(Filters.text, inputFeedback)],
                 STATE2: [MessageHandler(Filters.text, inputFeedback2)]
             },
-            fallbacks=[CommandHandler('cancel', cancel)])
+            fallbacks = [CommandHandler('cancel', cancel)])
         updater.dispatcher.add_handler(conversation_handler)
 
         updater.dispatcher.add_handler(CommandHandler('nota', askForNota))

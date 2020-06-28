@@ -55,7 +55,7 @@ STATE2 = 2
 
 def welcome(update, context):
     try:
-        message = ("Olá " + update.message.from_user.first_name + "!\n" +
+        message = ("Olá **" + update.message.from_user.first_name + "**!\n" +
             "Em que posso ajudá-lo hoje?")
         print(message)
         context.bot.send_message(chat_id = update.effective_chat.id, text = message)
@@ -64,7 +64,7 @@ def welcome(update, context):
 
 def feedback(update, context):
     try:
-        message = 'Por favor, digite um feedback para o nosso tutorial:'
+        message = 'Por favor, digite um **feedback** para o nosso tutorial:'
         update.message.reply_text(message, reply_markup = ReplyKeyboardMarkup([], one_time_keyboard = True))
         return STATE1
     except Exception as e:
@@ -74,24 +74,24 @@ def inputFeedback(update, context):
     feedback = update.message.text
     print(feedback)
     if len(feedback) < 10:
-        message = ("Seu feedback foi muito curtinho...\n" +
+        message = ("Seu feedback foi muito **curtinho**...\n" +
                    "Informa mais pra gente, por favor?")
         context.bot.send_message(chat_id = update.effective_chat.id, text = message)
         return STATE1
     else:
-        message = "Muito obrigado pelo seu feedback!"
+        message = "**Muito obrigado pelo seu feedback!**"
         context.bot.send_message(chat_id = update.effective_chat.id, text = message)
 
 def inputFeedback2(update, context):
     feedback = update.message.text
-    message = "Muito obrigado pelo seu feedback!"
+    message = "**Muito obrigado pelo seu feedback!**"
     context.bot.send_message(chat_id = update.effective_chat.id, text = message)
 
 def cancel(update, context):
     return ConversationHandler.END
 
 def askForNota(update, context):
-    question = 'Qual nota você dá para o tutorial?'
+    question = 'Qual nota você dá para o **tutorial**?'
     keyboard = InlineKeyboardMarkup(
         [[InlineKeyboardButton("☹️ 1", callback_data = '1'),
           InlineKeyboardButton("🙁 2", callback_data = '2'),
@@ -126,7 +126,7 @@ def dblist(update, context):
             tables = tables + " > " + str(row_no) + " " + str(table[0]) + " (" + str(table[1]) + " rows)\n"
         sql.close()
         message = ("There are the tables below in the database:\n" +
-                    "Database name: *" + DBPATH + "*\n" +
+                    "Database name: **" + DBPATH + "**\n" +
                     "--------------------------------------------------\n" + tables)
         print(message)
         context.bot.send_message(chat_id = update.effective_chat.id, text = message)

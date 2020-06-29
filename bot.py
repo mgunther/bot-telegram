@@ -65,7 +65,7 @@ def welcome(update, context):
 def feedback(update, context):
     try:
         message = 'Por favor, digite um **feedback** para o nosso tutorial:'
-        update.message.reply_text(message, reply_markup = ReplyKeyboardMarkup([], one_time_keyboard = True))
+        update.message.reply_text(message, reply_markup = ReplyKeyboardMarkup([], one_time_keyboard = True), parse_mode = "markdown")
         return STATE1
     except Exception as e:
         print(str(e))
@@ -76,16 +76,16 @@ def inputFeedback(update, context):
     if len(feedback) < 10:
         message = ("Seu feedback foi muito **curtinho**...\n" +
                    "Informa mais pra gente, por favor?")
-        context.bot.send_message(chat_id = update.effective_chat.id, text = message)
+        context.bot.send_message(chat_id = update.effective_chat.id, text = message, parse_mode = "markdown")
         return STATE1
     else:
         message = "**Muito obrigado pelo seu feedback!**"
-        context.bot.send_message(chat_id = update.effective_chat.id, text = message)
+        context.bot.send_message(chat_id = update.effective_chat.id, text = message, parse_mode = "markdown")
 
 def inputFeedback2(update, context):
     feedback = update.message.text
     message = "**Muito obrigado pelo seu feedback!**"
-    context.bot.send_message(chat_id = update.effective_chat.id, text = message)
+    context.bot.send_message(chat_id = update.effective_chat.id, text = message, parse_mode = "markdown")
 
 def cancel(update, context):
     return ConversationHandler.END
@@ -98,13 +98,13 @@ def askForNota(update, context):
           InlineKeyboardButton("😐 3", callback_data = '3'),
           InlineKeyboardButton("🙂 4", callback_data = '4'),
           InlineKeyboardButton("😀 5", callback_data = '5')]])
-    update.message.reply_text(question, reply_markup = keyboard)
+    update.message.reply_text(question, reply_markup = keyboard, parse_mode = "markdown")
 
 def getNota(update, context):
     query = update.callback_query
     print(str(query.data))
     message = 'Muito obrigado pela sua nota: ' + str(query.data)
-    context.bot.send_message(chat_id = update.effective_chat.id, text = message)
+    context.bot.send_message(chat_id = update.effective_chat.id, text = message, parse_mode = "markdown")
 
 def dblist(update, context):
     try:
@@ -129,7 +129,7 @@ def dblist(update, context):
                     "Database name: **" + DBPATH + "**\n" +
                     "--------------------------------------------------\n" + tables)
         print(message)
-        context.bot.send_message(chat_id = update.effective_chat.id, text = message)
+        context.bot.send_message(chat_id = update.effective_chat.id, text = message, parse_mode = "markdown")
     except Exception as e:
         print(str(e))
 

@@ -121,6 +121,7 @@ def dblist(update, context):
                  "WHERE m.type ='table' " +
                  "  AND m.name NOT LIKE 'sqlite_%';")
         cursor.execute(query)
+        print(cursor.description)
         for table in cursor.fetchall():
             row_no += 1
             tables = tables + " > " + str(row_no) + " " + str(table[0]) + " (" + str(table[1]) + " rows)\n"

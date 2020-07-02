@@ -65,6 +65,7 @@ def welcome(update, context):
 def feedback(update, context):
     try:
         message = 'Por favor, digite um **feedback** para o nosso tutorial:'
+        print(message)
         update.message.reply_text(message, reply_markup = ReplyKeyboardMarkup([], one_time_keyboard = True), parse_mode = "markdown")
         return STATE1
     except Exception as e:
@@ -76,11 +77,11 @@ def inputFeedback(update, context):
     if len(feedback) < 10:
         message = ("Seu feedback foi muito **curtinho**...\n" +
                    "Informa mais pra gente, por favor?")
-        context.bot.send_message(chat_id = update.effective_chat.id, text = message, parse_mode = "markdown")
+        # context.bot.send_message(chat_id = update.effective_chat.id, text = message, parse_mode = "markdown")
         return STATE1
     else:
         message = "**Muito obrigado pelo seu feedback!**"
-        context.bot.send_message(chat_id = update.effective_chat.id, text = message, parse_mode = "markdown")
+    context.bot.send_message(chat_id = update.effective_chat.id, text = message, parse_mode = "markdown")
 
 def inputFeedback2(update, context):
     feedback = update.message.text
@@ -128,7 +129,8 @@ def dblist(update, context):
         sql.close()
         message = ("There are the tables below in the database:\n" +
                     "Database name: **" + DBPATH + "**\n" +
-                    "--------------------------------------------------\n" + tables)
+                    "--------------------------------------------------\n" +
+                    tables)
         print(message)
         context.bot.send_message(chat_id = update.effective_chat.id, text = message, parse_mode = "markdown")
     except Exception as e:
